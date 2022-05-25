@@ -194,7 +194,6 @@ class PostProcessing:
         groundTruth, predicted, y_pred, total_time = self.detectAll(model, x, y)
 
         PCmetric = []
-        Dmetric = []
 
         print("++++++++++++++ DETECTION ++++++++++++++")
 
@@ -213,10 +212,7 @@ class PostProcessing:
         
         else:
             PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd))
-            Dmetric.append(self.averageDistanceMetric(groundTruth, predicted, general_qtd))
-
             print("LIT-SYN-All PCmetric: {0}".format(PCmetric[-1]))
-            print("LIT-SYN-All Dmetric: {0}".format(Dmetric[-1]))
 
         print("++++++++++++++ CLASSIFICATION ++++++++++++++")
 
@@ -233,8 +229,6 @@ class PostProcessing:
         groundTruth, predicted = self.detectEvents(model, x, y)
 
         PCmetric = []
-        Dmetric = []
-
         if general_qtd is not None:
             PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd, target=1))
             PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd, target=2))
@@ -242,35 +236,17 @@ class PostProcessing:
             PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd, target=8))
             PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd))
 
-            Dmetric.append(self.averageDistanceMetric(groundTruth, predicted, general_qtd, target=1))
-            Dmetric.append(self.averageDistanceMetric(groundTruth, predicted, general_qtd, target=2))
-            Dmetric.append(self.averageDistanceMetric(groundTruth, predicted, general_qtd, target=3))
-            Dmetric.append(self.averageDistanceMetric(groundTruth, predicted, general_qtd, target=8))
-            Dmetric.append(self.averageDistanceMetric(groundTruth, predicted, general_qtd))
-
             print("LIT-SYN-1 PCmetric: {0}".format(PCmetric[0]))
-            print("LIT-SYN-1 Dmetric: {0}".format(Dmetric[0]))
-
             print("LIT-SYN-2 PCmetric: {0}".format(PCmetric[1]))
-            print("LIT-SYN-2 Dmetric: {0}".format(Dmetric[1]))
-
             print("LIT-SYN-3 PCmetric: {0}".format(PCmetric[2]))
-            print("LIT-SYN-3 Dmetric: {0}".format(Dmetric[2]))
-
             print("LIT-SYN-8 PCmetric: {0}".format(PCmetric[3]))
-            print("LIT-SYN-8 Dmetric: {0}".format(Dmetric[3]))
-
             print("LIT-SYN-All PCmetric: {0}".format(PCmetric[4]))
-            print("LIT-SYN-All Dmetric: {0}".format(Dmetric[4]))
         
         else:
             PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd))
-            Dmetric.append(self.averageDistanceMetric(groundTruth, predicted, general_qtd))
-
             print("LIT-SYN-All PCmetric: {0}".format(PCmetric[-1]))
-            print("LIT-SYN-All Dmetric: {0}".format(Dmetric[-1]))
 
-        return PCmetric, Dmetric
+        return PCmetric
 
     def f1_with_detection(self, model, x, y, general_acquisition_type=None, target=None, print_error=True):
         groundTruth, predicted = self.detectEvents(model, x, y)
