@@ -5,6 +5,8 @@ import pickle
 import sys
 
 from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Lambda
+from sklearn.preprocessing import MaxAbsScaler
 
 sys.path.append("../src/")
 from ModelHandler import ModelHandler
@@ -27,6 +29,21 @@ configs = {
     "SNRdb": None
 }
 
+class InferenceModel: # Gambi
+    def __init__(self, scattering_extract, output_model, transformer_type, transformer_classification):
+        self.scattering_extract = scattering_extract
+        self.output_model = output_model
+        self.transformer_type = transformer_type
+        self.transformer_classification = transformer_classification
+
+    def predict(self, x):
+        features_type, features_class = self.scattering_extract.predict(x)
+        
+        features_type = self.transformer_type.transform(features_type)
+        features_class = self.transformer_classification.transform(features_class)
+
+        return self.output_model.predict([features_type, features_class])
+
 def main():
     folderPath = configs["FOLDER_PATH"]
     folderDataPath = configs["FOLDER_DATA_PATH"]
@@ -39,16 +56,18 @@ def main():
     modelHandler = ModelHandler(configs=configs)
     postProcessing = PostProcessing(configs=configs)
 
-    scattering_extract = ModelHandler.buildBaseScattering(input_shape=x_test.shape[1])
+    scattering_extract = ModelHandler.buildBaseScattering(x_test.shape[1])
 
     print("Loaded Data")
     print("Total test examples: {0}".format(x_test.shape[0]))
 
-    outputModel = modelHandler.buildScatteringOutput(602)
+    outputModel = modelHandler.buildScatteringOutput3(602)
     outputModel.load_weights(folderPath + "model.h5")
 
-    model = Model(scattering_extract.input, outputModel(scattering_extract.output))
-    model.summary()
+    transformer_type = pickle.load(open(folderDataPath + "scaler_type.p", "rb"))
+    transformer_classification = pickle.load(open(folderDataPath + "scaler_class.p", "rb"))
+
+    model = InferenceModel(scattering_extract, outputModel, transformer_type, transformer_classification)
 
     x_test = np.squeeze(x_test, axis=-1)
     postProcessing.checkModelAll(model, x_test, y_test, general_qtd=general_qtd_test, print_error=False)

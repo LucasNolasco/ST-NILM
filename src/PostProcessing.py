@@ -122,19 +122,50 @@ class PostProcessing:
     def detectEvents(self, model, x_test, y_test, multilabel=True):
         total_time = 0
         groundTruth, predicted = [], []
-        for xi, groundTruth_detection, groundTruth_type, groundTruth_classification in zip(x_test, y_test["detection"], y_test["type"], y_test["classification"]):
+        import numpy as np
+        for xi, groundTruth_type, groundTruth_classification in zip(x_test, y_test["type"], y_test["classification"]):
             init_time = timeit.default_timer()
-            result = model.predict(np.expand_dims(xi, axis = 0))
-
-            raw_detection, raw_type, raw_classification = self.processResult(result[0][0], result[1][0], result[2][0])
-            raw_gt_detection, raw_gt_type, raw_gt_classification = self.processResult(groundTruth_detection, groundTruth_type, groundTruth_classification)
+            result = model.predict(np.expand_dims(xi, axis=0))
+            #result = np.array(result)
+            raw_type, raw_classification = self.processResult(result[0][0], result[1][0])
+            raw_gt_type, raw_gt_classification = self.processResult(groundTruth_type, groundTruth_classification)
 
             if multilabel:
-                predict_events = self.suppression(raw_detection, raw_type, raw_classification)
-                groundTruth_events = self.suppression(raw_gt_detection, raw_gt_type, raw_gt_classification)
+                predict_events = self.suppression(raw_type, raw_classification)
+                groundTruth_events = self.suppression(raw_gt_type, raw_gt_classification)
             else:
-                predict_events = self.suppressionMultiClass(raw_detection, raw_type, raw_classification)
-                groundTruth_events = self.suppressionMultiClass(raw_gt_detection, raw_gt_type, raw_gt_classification)
+                predict_events = self.suppressionMultiClass(raw_type, raw_classification)
+                groundTruth_events = self.suppressionMultiClass(raw_gt_type, raw_gt_classification)
+
+            final_time = timeit.default_timer()
+
+            total_time += final_time - init_time
+
+            predicted.append(predict_events)
+            groundTruth.append(groundTruth_events)
+
+        print("Total time: {0}, Average Time: {1}".format(total_time, total_time/x_test.shape[0]))
+
+        return groundTruth, predicted
+
+
+    def detectEvents2(self, model, x_test, x_test_nd, y_test, multilabel=True):
+        total_time = 0
+        groundTruth, predicted = [], []
+        import numpy as np
+        for xi, xi_nd, groundTruth_type, groundTruth_classification in zip(x_test, x_test_nd, y_test["type"], y_test["classification"]):
+            init_time = timeit.default_timer()
+            result = model.predict([np.expand_dims(xi, axis=0),np.expand_dims(xi_nd, axis=0)])
+            #result = np.array(result)
+            raw_type, raw_classification = self.processResult(result[0][0], result[1][0])
+            raw_gt_type, raw_gt_classification = self.processResult(groundTruth_type, groundTruth_classification)
+
+            if multilabel:
+                predict_events = self.suppression(raw_type, raw_classification)
+                groundTruth_events = self.suppression(raw_gt_type, raw_gt_classification)
+            else:
+                predict_events = self.suppressionMultiClass(raw_type, raw_classification)
+                groundTruth_events = self.suppressionMultiClass(raw_gt_type, raw_gt_classification)
 
             final_time = timeit.default_timer()
 
@@ -248,6 +279,30 @@ class PostProcessing:
 
         return PCmetric
 
+
+    def checkModel2(self, model, x, x_nd, y, general_qtd=None, print_error=True):
+        groundTruth, predicted = self.detectEvents2(model, x, x_nd, y)
+
+        PCmetric = []
+        if general_qtd is not None:
+            PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd, target=1))
+            PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd, target=2))
+            PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd, target=3))
+            PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd, target=8))
+            PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd))
+
+            print("LIT-SYN-1 PCmetric: {0}".format(PCmetric[0]))
+            print("LIT-SYN-2 PCmetric: {0}".format(PCmetric[1]))
+            print("LIT-SYN-3 PCmetric: {0}".format(PCmetric[2]))
+            print("LIT-SYN-8 PCmetric: {0}".format(PCmetric[3]))
+            print("LIT-SYN-All PCmetric: {0}".format(PCmetric[4]))
+        
+        else:
+            PCmetric.append(self.PCMetric(groundTruth, predicted, general_qtd))
+            print("LIT-SYN-All PCmetric: {0}".format(PCmetric[-1]))
+
+        return PCmetric
+
     def f1_with_detection(self, model, x, y, general_acquisition_type=None, target=None, print_error=True):
         groundTruth, predicted = self.detectEvents(model, x, y)
 
@@ -293,17 +348,18 @@ class PostProcessing:
         totally_correct = 0
         total_wrong = 0
         detection_error = []
-
+        import numpy as np
+        
         for xi, groundTruth_detection, groundTruth_type, groundTruth_classification in zip(x_test, y_test["detection"], y_test["type"], y_test["classification"]):
             error = False
             
             result = model.predict(np.expand_dims(xi, axis = 0))
+            #result = np.array(result)
+            raw_type, raw_classification = self.processResult(result[0][0], result[1][0])
+            raw_gt_type, raw_gt_classification = self.processResult(groundTruth_type, groundTruth_classification)
 
-            raw_detection, raw_type, raw_classification = self.processResult(result[0][0], result[1][0], result[2][0])
-            raw_gt_detection, raw_gt_type, raw_gt_classification = self.processResult(groundTruth_detection, groundTruth_type, groundTruth_classification)
-
-            predict_events = self.suppression(raw_detection, raw_type, raw_classification)
-            groundTruth_events = self.suppression(raw_gt_detection, raw_gt_type, raw_gt_classification)
+            predict_events = self.suppression(raw_type, raw_classification)
+            groundTruth_events = self.suppression(raw_gt_type, raw_gt_classification)
 
             event_outside_margin = False
 
