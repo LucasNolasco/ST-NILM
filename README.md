@@ -1,8 +1,8 @@
-# ScatNILM
+# ST-NILM
 
-This repository is based on the project [DeepDFML-NILM: A New CNN-Based Architecture for Detection, Feature Extraction and Multi-Label Classification in NILM Signals](https://github.com/LucasNolasco/DeepDFML-NILM). <!-- We propose a new CNN architecture to perform detection, feature extraction, and multi-label classification of loads, in non-intrusive load monitoring (NILM) approaches, with a single model for high-frequency signals. This model follows the idea of YOLO network, which provides the detection and multi-label classification of images. The obtained results are equivalent or superior (in most analyzed cases) to state-of-the-art methods for the evaluated datasets. -->
+This repository hosts the official implementation of the method proposed in the paper "***ST-NILM: A Wavelet Scattering-Based Architecture for Feature Extraction and Multi-Label Classification in NILM Signals***". The paper was submitted to IEEE Sensors Journal and is currently under review.
 
-<!-- ![Architecture](.images/architecture.png) -->
+![dfml_ScatDFML4](https://user-images.githubusercontent.com/13191527/192824107-3fa1faad-591b-41b6-a72b-860394e29938.png)
 
 ---
 
@@ -83,6 +83,10 @@ Also, there are a few notebooks in the folder `notebooks` for evaluation of the 
 The tests on Jetson TX1 are detailed in this [tutorial](EmbeddedSystem.md).
 
 ---
+
+## DeepDFML-NILM
+
+This repository is based on the project [DeepDFML-NILM: A New CNN-Based Architecture for Detection, Feature Extraction and Multi-Label Classification in NILM Signals](https://github.com/LucasNolasco/DeepDFML-NILM). <!-- We propose a new CNN architecture to perform detection, feature extraction, and multi-label classification of loads, in non-intrusive load monitoring (NILM) approaches, with a single model for high-frequency signals. This model follows the idea of YOLO network, which provides the detection and multi-label classification of images. The obtained results are equivalent or superior (in most analyzed cases) to state-of-the-art methods for the evaluated datasets. -->
 
 ## Cite
 
