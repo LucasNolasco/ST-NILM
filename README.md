@@ -36,12 +36,6 @@ This implementation uses a dictionary structure to define some of the execution 
 
 ---
 
-## Trained weights
-
-The trained weights may be downloaded from this [link](). Download and place the `TrainedWeights` folder inside the `ScatNILM` directory to use them.
-
----
-
 ## Dataset Waveforms
 
 The LIT-Dataset is a public dataset and can be downloaded on this [link](http://dainf.ct.utfpr.edu.br/~douglas/LIT_Dataset/index.html). However, only MATLAB tools are provided. In order to use the dataset with this implementation, a version on *.hdf5 can be downloaded on the following [link](https://drive.google.com/file/d/10NL9S8BYioj1U1_phCEoKX4WWRQoBuYW/view?usp=sharing). The dataset is stored on this file in the following hierarchical structure:
