@@ -1,6 +1,6 @@
 # ST-NILM
 
-This repository hosts the official implementation of the method proposed in the paper "***ST-NILM: A Wavelet Scattering-Based Architecture for Feature Extraction and Multi-Label Classification in NILM Signals***". The paper was submitted to IEEE Sensors Journal and is currently under review.
+This repository hosts the official implementation of the method proposed in the paper ["ST-NILM: A Wavelet Scattering-Based Architecture for Feature Extraction and Multi-Label Classification in NILM Signals"](https://ieeexplore.ieee.org/document/10436052), published on the IEEE Sensors Journal. It is heavily inspired by the [DeepDFML-NILM architecture](https://github.com/LucasNolasco/DeepDFML-NILM), aiming to reduce the amount of data needed to achieve state-of-the-art results by introducing Scattering Transform layers to the original architecture.
 
 ![dfml_ScatDFML4](https://user-images.githubusercontent.com/13191527/192824107-3fa1faad-591b-41b6-a72b-860394e29938.png)
 
@@ -85,6 +85,19 @@ This repository is based on the project [DeepDFML-NILM: A New CNN-Based Architec
 ## Cite
 
 If this work helped you somehow, here is a way to cite it:
+
+```
+@ARTICLE{10436052,
+  author={De Aguiar, Everton Luiz and Nolasco, Lucas da Silva and Lazzaretti, André Eugenio and Pipa, Daniel Rodrigues and Lopes, Heitor Silvério},
+  journal={IEEE Sensors Journal}, 
+  title={ST-NILM: A Wavelet Scattering-Based Architecture for Feature Extraction and Multi-Label Classification in NILM Signals}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={1-1},
+  keywords={Feature extraction;Convolutional neural networks;Time-frequency analysis;Scattering;Sensors;Data mining;Convolution;Deep learning;Multi-label classification;NILM;Wavelet Scattering},
+  doi={10.1109/JSEN.2024.3360188}}
+```
 
 ```
 @ARTICLE{Nolasco2022,
